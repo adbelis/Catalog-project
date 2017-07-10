@@ -200,6 +200,11 @@ def bookDetail(category, bookId):
 @app.route('/books/category/<string:category>/<int:bookId>/edit/',
            methods=['GET', 'POST'])
 def editBookDetails(category, bookId):
+    
+    # check if user is logged in or not
+    if 'username' not in login_session:
+        return redirect('/login)
+                        
     book = session.query(BookDB).filter_by(id=bookId,
                                            category=category).first()
     if request.method == 'POST':
