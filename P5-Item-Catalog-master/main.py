@@ -203,14 +203,11 @@ def editBookDetails(category, bookId):
     
     # check if user is logged in or not
     if 'username' not in login_session:
-        return redirect('/login)
+        return redirect('/login')
                         
     book = session.query(BookDB).filter_by(id=bookId,
                                            category=category).first()
     if request.method == 'POST':
-
-        # check if user is logged in or not
-
         if 'provider' in login_session and login_session['provider'] \
                 != 'null':
             bookName = request.form['bookName']
@@ -313,13 +310,15 @@ def editBookDetails(category, bookId):
 
 @app.route('/books/category/<string:category>/<int:bookId>/delete/')
 def deleteBook(category, bookId):
+    
+    # check if user is logged in or not
+    if 'username' not in login_session:
+        return redirect('/login')
+    
     book = session.query(BookDB).filter_by(category=category,
                                            id=bookId).first()
     state = new_state()
     if book:
-
-        # check if user is logged in or not
-
         if 'provider' in login_session and login_session['provider'] \
                 != 'null':
             user_id = check_user().id
@@ -380,7 +379,7 @@ def bookJSON(category, bookId):
 @app.route('/gconnect', methods=['POST'])
 def gConnect():
     if request.args.get('state') != login_session['state']:
-        response.make_response(json.dumps('Invalid State paramenter'),
+        response=make_response(json.dumps('Invalid State paramenter'),
                                401)
         response.headers['Content-Type'] = 'application/json'
         return response
